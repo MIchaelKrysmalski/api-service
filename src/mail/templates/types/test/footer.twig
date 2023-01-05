@@ -1,0 +1,12 @@
+{% block footer %}
+    <footer>
+        {% block greetings %}
+            <p>Herzliche Grüße,<br />
+                Ihr Zeiterfassungs System!<br>
+            </p>
+        {% endblock greetings %}
+        <p>
+            {{ user.email }}
+        </p>
+    </footer>
+{% endblock footer %}

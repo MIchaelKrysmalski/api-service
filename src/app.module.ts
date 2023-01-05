@@ -6,6 +6,11 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './user/entities/user.entity';
+import { TimeEntryModule } from './time-entry/time-entry.module';
+import { PdfModule } from './pdf/pdf.module';
+import { MailModule } from './mail/mail.module';
+import { TimeEntry } from './time-entry/entities/timeEntry.entity';
+import { Project } from './Projects/entities/project.entity';
 
 @Module({
   imports: [
@@ -21,11 +26,14 @@ import { User } from './user/entities/user.entity';
       username: 'dbuser',
       password: 'password',
       database: 'timeScheduler',
-      entities: [User],
+      entities: [User, TimeEntry, Project],
       synchronize: true,
     }),
     UserModule,
     AuthModule,
+    TimeEntryModule,
+    PdfModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

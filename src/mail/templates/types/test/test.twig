@@ -1,0 +1,19 @@
+{% extends 'master.twig' %}
+
+{% block header %}
+	{% include 'types/test/header.twig' %}
+{% endblock header %}
+
+{% block content %}
+
+	{% block subject %}
+	TestMail
+	{% endblock subject %}
+	{% block test %}
+		<p>Das ist ein Test</p>	
+	{% endblock test %}
+{% endblock content %}
+
+{% block footer %}
+	{% include 'types/test/footer.twig' %}
+{% endblock footer %}

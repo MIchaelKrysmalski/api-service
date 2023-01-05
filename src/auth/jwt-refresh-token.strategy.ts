@@ -15,6 +15,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([
                 (request: Request) => {
+                    
                     return request?.cookies?.Refresh;
                 },
             ]),
@@ -24,7 +25,9 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
     }
 
     async validate(request: Request, payload: TokenPayload) {
-        const refreshToken = request.cookies?.Refresh;
+        console.log("yeet")
+        console.log(request.body);
+        const refreshToken = request.body.refreshToken;
         return this.userService.getUserIfRefreshTokenMatches(
             refreshToken,
             payload.userId,

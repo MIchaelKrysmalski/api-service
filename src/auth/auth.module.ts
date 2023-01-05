@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
+import { JwtRefreshTokenStrategy } from './jwt-refresh-token.strategy';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { JwtStrategy } from './jwt.strategy';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: `${process.env.ATEXPIRESSIN}s` },
     }),],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, JwtRefreshTokenStrategy],
   controllers: [AuthController],
   exports: [AuthService]
 })

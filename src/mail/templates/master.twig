@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            box-sizing: border-box;
+            font-family: "Myriad Pro", Arial, sans-serif
+        }
+    </style>
+</head>
+
+<body>
+<table>
+    <thead>
+    <tr>
+        <td>
+            {% block header %}
+                {% include 'components/header.twig' %}
+            {% endblock header %}
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            {% block content %}
+            {% endblock content %}
+        </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td>
+            {% block footer %}
+                {% include 'components/footer.twig' %}
+            {% endblock footer %}
+        </td>
+    </tr>
+    </tfoot>
+</table>
+</body>
+</html>
