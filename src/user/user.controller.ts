@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiCreatedResponse, ApiForbiddenResponse, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AccessTokenGuard } from 'src/auth/accessToken.guard';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { ResetPasswordCallbackDto } from './dtos/reset-password-callback.dto';
 import { UserService } from './user.service';
@@ -14,7 +14,7 @@ export class UserController {
     @ApiCreatedResponse({ description: 'Get Succesfully' })
     @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
     @ApiForbiddenResponse({ description: 'Unauthorized Request' }) 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AccessTokenGuard)
     async getById(@Param('id') id: number) {
         return this.usersService.getById(id); 
     }
@@ -23,7 +23,7 @@ export class UserController {
     @ApiCreatedResponse({ description: 'Get Succesfully' })
     @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
     @ApiForbiddenResponse({ description: 'Unauthorized Request' }) 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AccessTokenGuard)
     async getAllUsers(@Req() req){
         if(!req.user.isAdmin) {
             return [];

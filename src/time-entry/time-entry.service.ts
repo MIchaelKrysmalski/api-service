@@ -27,7 +27,9 @@ export class TimeEntryService {
         let currentMonth = startDate.getMonth() + 1
         const day  = startDate.getDate();
         let week = Math.ceil(day / 7);
-        let timeSpent = (timeEntryDto.startTime.getMilliseconds() - timeEntryDto.endTime.getMilliseconds()) / 60000
+        const start = new Date(timeEntryDto.startTime);
+        const end = new Date(timeEntryDto.endTime);
+        let timeSpent = Math.abs(start.getTime() - end.getTime()) ;
         const timeEntry = await this.timeEntryRepository.save({
             startTime: new Date(timeEntryDto.startTime),
             endTime: new Date(timeEntryDto.endTime),
@@ -37,10 +39,15 @@ export class TimeEntryService {
             currentWeek: week,
             type: project.name,
             project: project,
-            timeSpent: timeSpent
+            userId: userId,
+            timeSpent: timeSpent / 60000
         });
         console.log(timeEntry);
         return timeEntry
+    }
+
+    async getAll() {
+        return this.timeEntryRepository.find();
     }
 
     async getTimeEntryByUser(userId: number) {
@@ -60,6 +67,8 @@ export class TimeEntryService {
         const user = await this.userSerivce.getById(userId);
         if(timeEntry && user) {
             timeEntry.description = updatetimeEntryDto.description;
+            timeEntry.timeSpent = updatetimeEntryDto.timeSpent;
+            timeEntry.startTime = updatetimeEntryDto.startTime;
             timeEntry.endTime = updatetimeEntryDto.endTime;
             timeEntry.type = updatetimeEntryDto.name;
         }

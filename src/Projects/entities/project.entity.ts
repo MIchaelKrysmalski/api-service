@@ -11,11 +11,11 @@ export class Project {
     name: string;
 
     @Column({ nullable: true })
-    descriptiom: string;
+    description: string;
 
     @Column({ nullable: true})
     workTime: number;
 
-    @OneToMany(() => TimeEntry, (timeEntry) => timeEntry.project)
+    @OneToMany(() => TimeEntry, (timeEntry) => timeEntry.project, { cascade: true, eager: true, onDelete: "SET NULL" })
     timeEntries: TimeEntry[]    
 }

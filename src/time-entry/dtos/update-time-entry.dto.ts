@@ -6,7 +6,14 @@ export class UpdateTimeEntryDto {
     
     @IsDate()
     @IsNotEmpty()
+    startTime: Date;
+    
+    @IsDate()
+    @IsNotEmpty()
     endTime: Date;
+
+    @IsString()
+    timeSpent: number;
     
     @IsString()
     @IsNotEmpty()

@@ -16,9 +16,10 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dtos/register-user.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 import RequestWithUser from './requestWithUser.interface';
-import { JwtAuthGuard } from './jwt-auth.guard';
 import { UserService } from 'src/user/user.service';
 import JwtRefreshGuard from './jwt-refresh.guard';
+import { AccessTokenGuard } from './accessToken.guard';
+import { RefreshTokenGuard } from './refreshToken.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -36,39 +37,26 @@ export class AuthController {
     @HttpCode(200)
     @ApiCreatedResponse({ description: 'Login Succesfully' })
     @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
-    @ApiForbiddenResponse({ description: 'Unauthorized Request' }) 
-    @UseGuards(LocalAuthGuard)
+    @ApiForbiddenResponse({ description: 'Unauthorized Request' })
     @Post('login')
     async logIn(@Req() request: RequestWithUser) {
-        const { user } = request;
-        const accessToken = this.authService.getCookieWithJwtAccessToken(user.id);
-        const refreshToken = this.authService.getCookieWithJwtRefreshToken(user.id);
-        const hashedRefreshToken = await this.userService.setCurrentRefreshToken(refreshToken.token, user.id);
-
-        request.res.setHeader('Set-Cookie', [accessToken, refreshToken.cookie]);
-        return { 
-            ...user,
-            currentHashedRefreshToken: hashedRefreshToken,
-            accessToken: accessToken,
-
-        };
+        return this.authService.login(request.body.email, request.body.password)
     }
 
     @ApiCreatedResponse({ description: 'Logout Succesfully' })
     @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
-    @ApiForbiddenResponse({ description: 'Unauthorized Request' }) 
-    @UseGuards(JwtAuthGuard)
+    @ApiForbiddenResponse({ description: 'Unauthorized Request' })
+    @UseGuards(AccessTokenGuard)
     @Post('logout')
     @HttpCode(200)
-    async logOut(@Req() request: RequestWithUser) {
-        await this.userService.removeRefreshToken(request.user.id);
-        request.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut());
+    async logOut(@Req() req: any) {
+        this.authService.logout(req.user['sub']);
     }
 
     @ApiCreatedResponse({ description: 'Auth Succesfully' })
     @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
     @ApiForbiddenResponse({ description: 'Unauthorized Request' }) 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AccessTokenGuard)
     @Get()
     authenticate(@Req() request: RequestWithUser) {
         const user = request.user;
@@ -79,18 +67,10 @@ export class AuthController {
     @ApiCreatedResponse({ description: 'Refresh Succesfully' })
     @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
     @ApiForbiddenResponse({ description: 'Unauthorized Request' }) 
-    @UseGuards(JwtRefreshGuard)
-    @Post('refresh')
-    refresh(@Req() request: RequestWithUser) {
-        const accessTokenCookie = this.authService.getCookieWithJwtAccessToken(
-            request.user.id,
-        );
-
-        request.res.setHeader('Set-Cookie', accessTokenCookie);
-        
-        return {
-            ...request.user,
-            accessTokenCookie,
-        };
+    @UseGuards(RefreshTokenGuard)
+    @Get('refresh')
+    async refresh(@Req() request: any) {
+        console.log(request.user);
+        return await this.authService.refresh(request.user.sub,request.user.refreshToken)
     }
 }

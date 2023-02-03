@@ -1,31 +1,32 @@
 import { Body, Controller, Get, Patch, Post, UseGuards } from "@nestjs/common";
-import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
+import { AccessTokenGuard } from "src/auth/accessToken.guard";
 import { ProjectDto } from "./dtos/project.dto";
 import { ProjectService } from "./project.service";
 
 @Controller('project')
-@UseGuards(JwtAuthGuard)
+@UseGuards(AccessTokenGuard)
 export class ProjectController {
     constructor(
         private readonly projectService: ProjectService
     ) { }
 
     @Post()
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AccessTokenGuard)
     create(
         @Body() projectDto: ProjectDto
     ) {
+        console.log(projectDto);
         return this.projectService.create(projectDto);
     }
 
     @Get()
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AccessTokenGuard)
     getProjects() {
         return this.projectService.getAllProjects();
     }
 
     @Patch()
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AccessTokenGuard)
     updateProjects() {
 
     }

@@ -34,6 +34,9 @@ export class TimeEntry{
     @ManyToOne(() => Project, (project) => project.timeEntries)
     project: Project;
 
+    @Column()
+    userId: number;
+
     @ManyToOne(() => User, (user) => user.timeEntries)
     user: User
 }

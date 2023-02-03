@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AccessTokenGuard } from 'src/auth/accessToken.guard';
 import { CreateTimeEntryDto } from './dtos/create-time-entry.dto';
 import { UpdateTimeEntryDto } from './dtos/update-time-entry.dto';
 import { TimeEntryService } from './time-entry.service';
@@ -12,22 +12,28 @@ export class TimeEntryController {
         private readonly timeEntryService: TimeEntryService
         ) { }
     @Post(':userId')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AccessTokenGuard)
     createTimeEntry(
         @Param('userId') userId: number,
         @Body() timeEntryDto: CreateTimeEntryDto
-    ) {
+    ): Promise<{ startTime: Date; endTime: Date; description: string; user: import("/home/michael/michael/projects/bachelorarbeit/api-service/src/user/entities/user.entity").User; currentMonth: number; currentWeek: number; type: string; project: import("/home/michael/michael/projects/bachelorarbeit/api-service/src/Projects/entities/project.entity").Project; timeSpent: number; } & import("/home/michael/michael/projects/bachelorarbeit/api-service/src/time-entry/entities/timeEntry.entity").TimeEntry> {
         return this.timeEntryService.createTimeEntry(userId, timeEntryDto);
     }
 
     @Get(':userId')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AccessTokenGuard)
     getTimeEntrysByUser(@Param('userId') userId: number) {
         return this.timeEntryService.getTimeEntryByUser(userId);
     }
 
+    @Get()
+    @UseGuards(AccessTokenGuard)
+    getTimeEntrys() {
+        return this.timeEntryService.getAll();
+    }
+
     @Patch(':userId')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AccessTokenGuard)
     updateTimeEntryFromUser(
         @Param('userId') userId: number,
         @Body() updateTimeEntryDto: UpdateTimeEntryDto
@@ -36,7 +42,7 @@ export class TimeEntryController {
     }
 
     @Delete(':userId')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AccessTokenGuard)
     deleteTimeEntryFromUser(
         @Param('userId') userId: number, 
         @Query('timeEntryId') timeEntryId: number) {
